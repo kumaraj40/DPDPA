@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="DPDPA Rules 2025 Gap Analysis Intelligence Platform — 119 compliance items across 18 rule areas">
+<meta name="theme-color" content="#050a0e">
+<title>DPDPA Rules 2025 — Gap Analysis Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#050a0e; --surface:#0b1218; --surface2:#111c26; --surface3:#162030;
+  --border:#1e3045; --border-bright:#2a4560;
+  --text:#e8f4fc; --text-muted:#6b8fa8; --text-dim:#3d5f78;
+  --accent:#00d4ff; --accent2:#0099cc;
+  --critical:#ff3a5c; --high:#ff8c42; --medium:#ffd166; --low:#06d6a0; --na:#7c8fa8;
+  --phase-imm:#00d4ff; --phase-12:#ffb800; --phase-18:#4fa3ff;
+  --fully:#06d6a0; --partial:#ffb800;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.025) 2px,rgba(0,0,0,0.025) 4px);pointer-events:none;z-index:9999}
+
+/* SIDEBAR */
+.sidebar{position:fixed;left:0;top:0;height:100vh;width:240px;background:var(--surface);border-right:1px solid var(--border);z-index:100;display:flex;flex-direction:column;transition:width 0.3s;overflow:hidden}
+.sidebar.collapsed{width:58px}
+.sidebar-logo{padding:18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;min-height:68px}
+.logo-icon{width:28px;height:28px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--bg);flex-shrink:0}
+.logo-text{font-size:11px;font-weight:700;color:var(--accent);white-space:nowrap;overflow:hidden}
+.logo-text span{display:block;color:var(--text-muted);font-weight:400;font-size:9px;letter-spacing:0.12em;margin-top:1px}
+.sidebar-toggle{margin-left:auto;cursor:pointer;color:var(--text-muted);padding:4px;border:none;background:none;font-size:16px;flex-shrink:0}
+.nav-section{font-size:9px;letter-spacing:0.2em;color:var(--text-dim);padding:14px 18px 5px;text-transform:uppercase;white-space:nowrap;overflow:hidden}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 18px;cursor:pointer;color:var(--text-muted);font-size:12px;font-weight:500;transition:all 0.2s;white-space:nowrap;border-left:3px solid transparent}
+.nav-item:hover{color:var(--text);background:var(--surface2)}
+.nav-item.active{color:var(--accent);background:rgba(0,212,255,0.06);border-left-color:var(--accent)}
+.nav-icon{font-size:15px;flex-shrink:0;width:22px;text-align:center}
+.nav-badge{margin-left:auto;background:var(--critical);color:#fff;font-size:9px;padding:2px 6px;border-radius:10px;font-family:'JetBrains Mono',monospace}
+.nav-badge.amber{background:var(--phase-12);color:var(--bg)}
+.nav-badge.blue{background:var(--phase-18)}
+.collapsed .nav-section,.collapsed .nav-label,.collapsed .nav-badge,.collapsed .logo-text{display:none}
+
+/* MAIN */
+.main{margin-left:240px;min-height:100vh;transition:margin-left 0.3s}
+.main.expanded{margin-left:58px}
+
+/* TOPBAR */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;height:62px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50}
+.topbar-title{font-size:14px;font-weight:700}
+.topbar-sub{font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
+.spacer{flex:1}
+.live-badge{display:flex;align-items:center;gap:6px;background:rgba(6,214,160,0.1);border:1px solid rgba(6,214,160,0.3);padding:4px 10px;border-radius:20px;font-size:10px;color:var(--fully);font-weight:600}
+.live-dot{width:6px;height:6px;background:var(--fully);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.5)}}
+.btn{padding:7px 14px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Syne',sans-serif;transition:all 0.2s;letter-spacing:0.04em}
+.btn-primary{background:var(--accent);color:var(--bg)}
+.btn-primary:hover{background:#33e0ff;transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--text);border-color:var(--border-bright)}
+.btn-danger{background:rgba(255,58,92,0.15);color:var(--critical);border:1px solid rgba(255,58,92,0.3)}
+
+/* API STATUS */
+.api-status{display:flex;align-items:center;gap:5px;font-size:10px;padding:4px 10px;border-radius:20px;border:1px solid var(--border)}
+.api-dot{width:6px;height:6px;border-radius:50%;background:var(--text-dim)}
+.api-dot.ok{background:var(--fully)}
+.api-dot.err{background:var(--critical)}
+
+/* PAGES */
+.page{display:none;padding:28px;animation:fadeIn 0.3s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:24px}
+.page-header h1{font-size:24px;font-weight:800;margin-bottom:5px}
+.page-header p{color:var(--text-muted);font-size:12px;max-width:700px;line-height:1.6}
+.gazette-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);padding:3px 9px;border-radius:4px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--accent);margin-bottom:10px}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;position:relative;overflow:hidden;transition:border-color 0.2s}
+.kpi-card:hover{border-color:var(--border-bright)}
+.kpi-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.kpi-card.critical::after{background:var(--critical)}
+.kpi-card.high::after{background:var(--high)}
+.kpi-card.medium::after{background:var(--medium)}
+.kpi-card.good::after{background:var(--fully)}
+.kpi-card.info::after{background:var(--accent)}
+.kpi-label{font-size:10px;letter-spacing:0.12em;color:var(--text-muted);text-transform:uppercase;margin-bottom:8px}
+.kpi-value{font-size:32px;font-weight:800;line-height:1;font-family:'JetBrains Mono',monospace}
+.kpi-value.c{color:var(--critical)} .kpi-value.h{color:var(--high)} .kpi-value.m{color:var(--medium)} .kpi-value.g{color:var(--fully)} .kpi-value.a{color:var(--accent)}
+.kpi-sub{font-size:10px;color:var(--text-muted);margin-top:5px}
+
+/* PHASE TIMELINE */
+.phase-timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+.phase-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px}
+.phase-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.phase-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.phase-dot.imm{background:var(--phase-imm);box-shadow:0 0 10px var(--phase-imm)}
+.phase-dot.p12{background:var(--phase-12);box-shadow:0 0 10px var(--phase-12)}
+.phase-dot.p18{background:var(--phase-18);box-shadow:0 0 10px var(--phase-18)}
+.phase-name{font-size:12px;font-weight:700}
+.phase-date{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);margin-bottom:8px}
+.phase-rules{font-size:11px;color:var(--text-muted);margin-bottom:10px;line-height:1.5}
+.phase-count{font-size:26px;font-weight:800;font-family:'JetBrains Mono',monospace}
+.phase-count.imm{color:var(--phase-imm)} .phase-count.p12{color:var(--phase-12)} .phase-count.p18{color:var(--phase-18)}
+.phase-count-label{font-size:10px;color:var(--text-muted)}
+
+/* CHARTS */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:24px}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px}
+.chart-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted);margin-bottom:14px}
+.donut-wrap{display:flex;align-items:center;gap:22px}
+.legend{display:flex;flex-direction:column;gap:8px}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:11px}
+.legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.legend-label{color:var(--text-muted);flex:1}
+.legend-val{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600}
+.bar-chart{display:flex;flex-direction:column;gap:8px}
+.bar-row{display:flex;align-items:center;gap:8px}
+.bar-label{font-size:10px;color:var(--text-muted);width:120px;flex-shrink:0;line-height:1.3}
+.bar-track{flex:1;height:18px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;display:flex;align-items:center;justify-content:flex-end;padding-right:5px;transition:width 1s ease}
+.bar-fill span{font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:600;color:rgba(0,0,0,0.8)}
+
+/* REGISTER */
+.filter-bar{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;align-items:center}
+.filter-select,.search-box{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:7px 11px;border-radius:6px;font-size:11px;font-family:'Syne',sans-serif;outline:none;transition:border-color 0.2s}
+.filter-select:focus,.search-box:focus{border-color:var(--accent)}
+.search-box{flex:1;min-width:200px}
+.search-box::placeholder{color:var(--text-dim)}
+.results-count{font-size:11px;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
+
+.register-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
+.register-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.register-card.critical::before{background:var(--critical)}
+.register-card.high::before{background:var(--high)}
+.register-card.medium::before{background:var(--medium)}
+.register-card.low::before{background:var(--low)}
+.register-card:hover{border-color:var(--border-bright);transform:translateX(2px)}
+.rc-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:7px}
+.rc-num{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text-dim);width:22px;flex-shrink:0;padding-top:1px}
+.rc-rule{font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--accent);background:rgba(0,212,255,0.08);padding:2px 6px;border-radius:3px;flex-shrink:0}
+.rc-topic{font-size:12px;font-weight:600;flex:1}
+.rc-badges{display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap}
+.badge{font-size:9px;padding:2px 6px;border-radius:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em}
+.badge.critical{background:rgba(255,58,92,0.15);color:var(--critical);border:1px solid rgba(255,58,92,0.25)}
+.badge.high{background:rgba(255,140,66,0.15);color:var(--high);border:1px solid rgba(255,140,66,0.25)}
+.badge.medium{background:rgba(255,209,102,0.12);color:var(--medium);border:1px solid rgba(255,209,102,0.2)}
+.badge.low{background:rgba(6,214,160,0.1);color:var(--low);border:1px solid rgba(6,214,160,0.2)}
+.badge.imm{background:rgba(0,212,255,0.1);color:var(--phase-imm);border:1px solid rgba(0,212,255,0.2)}
+.badge.p12{background:rgba(255,184,0,0.1);color:var(--phase-12);border:1px solid rgba(255,184,0,0.2)}
+.badge.p18{background:rgba(79,163,255,0.1);color:var(--phase-18);border:1px solid rgba(79,163,255,0.2)}
+.rc-req{font-size:11px;color:var(--text-muted);line-height:1.5;margin-left:32px}
+.rc-meta{display:flex;gap:12px;margin-top:8px;margin-left:32px;flex-wrap:wrap}
+.rc-meta-item{font-size:10px;color:var(--text-dim)}
+.rc-meta-item span{color:var(--text-muted);font-weight:600}
+.rc-expand{display:none;margin-top:10px;margin-left:32px;padding-top:10px;border-top:1px solid var(--border)}
+.rc-expand.open{display:block}
+.rc-section{margin-bottom:10px}
+.rc-section-title{font-size:9px;text-transform:uppercase;letter-spacing:0.15em;color:var(--accent);margin-bottom:3px}
+.rc-section-body{font-size:11px;color:var(--text-muted);line-height:1.5}
+.status-select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 9px;border-radius:5px;font-size:11px;font-family:'Syne',sans-serif;cursor:pointer;outline:none;width:100%;margin-top:4px;transition:border-color 0.2s}
+.status-select:focus{border-color:var(--accent)}
+.rule-group-header{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;margin-bottom:7px;margin-top:18px;cursor:pointer;transition:border-color 0.2s}
+.rule-group-header:hover{border-color:var(--border-bright)}
+.rg-name{font-size:11px;font-weight:700;flex:1}
+.rg-count{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text-muted)}
+.rg-chevron{color:var(--text-muted);transition:transform 0.2s;font-size:11px}
+.rg-chevron.open{transform:rotate(90deg)}
+.rule-group-content{overflow:hidden;transition:max-height 0.35s ease}
+
+/* TABLE */
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:24px}
+.table-header-bar{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.table-header-bar h3{font-size:12px;font-weight:700}
+table{width:100%;border-collapse:collapse}
+thead th{background:var(--surface2);padding:9px 14px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);font-weight:600}
+tbody tr{border-bottom:1px solid var(--border);transition:background 0.15s}
+tbody tr:hover{background:rgba(0,212,255,0.03)}
+tbody tr:last-child{border-bottom:none}
+td{padding:10px 14px;font-size:11px;color:var(--text);vertical-align:top}
+td.mono{font-family:'JetBrains Mono',monospace;font-size:10px}
+.penalty-tag{display:inline-block;background:rgba(255,58,92,0.15);color:var(--critical);border:1px solid rgba(255,58,92,0.3);padding:2px 7px;border-radius:3px;font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:600;white-space:nowrap}
+.penalty-tag.p200{background:rgba(255,140,66,0.15);color:var(--high);border-color:rgba(255,140,66,0.3)}
+.penalty-tag.p150{background:rgba(255,209,102,0.15);color:var(--medium);border-color:rgba(255,209,102,0.3)}
+.penalty-tag.p50{background:rgba(6,214,160,0.1);color:var(--fully);border-color:rgba(6,214,160,0.2)}
+
+/* ENFORCEMENT */
+.readiness-timeline{position:relative;padding-left:30px}
+.readiness-timeline::before{content:'';position:absolute;left:10px;top:20px;bottom:20px;width:2px;background:var(--border)}
+.rt-item{position:relative;margin-bottom:22px}
+.rt-dot{position:absolute;left:-30px;top:14px;width:20px;height:20px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700}
+.rt-dot.imm{border-color:var(--phase-imm);background:rgba(0,212,255,0.1);color:var(--phase-imm)}
+.rt-dot.p12{border-color:var(--phase-12);background:rgba(255,184,0,0.1);color:var(--phase-12)}
+.rt-dot.p18{border-color:var(--phase-18);background:rgba(79,163,255,0.1);color:var(--phase-18)}
+.rt-card{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:16px}
+.rt-phase{font-size:9px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:3px}
+.rt-phase.imm{color:var(--phase-imm)} .rt-phase.p12{color:var(--phase-12)} .rt-phase.p18{color:var(--phase-18)}
+.rt-title{font-size:15px;font-weight:700;margin-bottom:7px}
+.rt-rules{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--accent);background:rgba(0,212,255,0.06);padding:3px 9px;border-radius:3px;display:inline-block;margin-bottom:9px}
+.rt-body{font-size:11px;color:var(--text-muted);line-height:1.6;margin-bottom:10px}
+.rt-actions{font-size:11px;color:var(--text);line-height:1.6;background:var(--surface2);border-radius:6px;padding:10px 12px;border-left:3px solid}
+.rt-actions.imm{border-left-color:var(--phase-imm)} .rt-actions.p12{border-left-color:var(--phase-12)} .rt-actions.p18{border-left-color:var(--phase-18)}
+.rt-actions-label{font-size:9px;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:3px}
+.rt-actions-label.imm{color:var(--phase-imm)} .rt-actions-label.p12{color:var(--phase-12)} .rt-actions-label.p18{color:var(--phase-18)}
+
+/* SCORING */
+.scoring-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.scoring-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px}
+.scoring-card h3{font-size:11px;text-transform:uppercase;letter-spacing:0.15em;color:var(--text-muted);margin-bottom:14px}
+.score-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
+.score-row:last-child{border-bottom:none}
+.score-num{font-size:20px;font-weight:800;font-family:'JetBrains Mono',monospace;width:28px}
+.score-label{font-size:11px;font-weight:700;width:70px}
+.score-def{font-size:11px;color:var(--text-muted);line-height:1.4;flex:1}
+.formula-box{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:12px;margin-bottom:10px}
+.formula-box-title{font-size:9px;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:5px}
+.formula-box-code{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text)}
+.formula-box-note{font-size:10px;color:var(--text-muted);margin-top:3px}
+.review-item{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border)}
+.review-item:last-child{border-bottom:none}
+.review-icon{font-size:16px;width:22px}
+.review-title{font-size:11px;font-weight:700;margin-bottom:2px}
+.review-desc{font-size:11px;color:var(--text-muted);line-height:1.4}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(5,10,14,0.85);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border-bright);border-radius:14px;width:680px;max-width:95vw;max-height:90vh;overflow-y:auto}
+.modal-header{padding:20px 24px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-header h2{font-size:17px;font-weight:800}
+.modal-close{background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;padding:4px}
+.modal-close:hover{color:var(--text)}
+.modal-body{padding:20px 24px}
+.modal-footer{padding:14px 24px 20px;display:flex;gap:10px;justify-content:flex-end;border-top:1px solid var(--border)}
+.form-group{margin-bottom:16px}
+.form-label{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted);margin-bottom:5px;display:block}
+.form-input{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 11px;border-radius:6px;font-size:12px;font-family:'Syne',sans-serif;outline:none;transition:border-color 0.2s;width:100%}
+.form-input:focus{border-color:var(--accent)}
+.form-input::placeholder{color:var(--text-dim)}
+.form-row{display:flex;gap:8px;align-items:flex-end}
+.form-row .form-group{flex:1;margin-bottom:0}
+.stakeholder-list{margin-bottom:12px}
+.stakeholder-row{display:flex;align-items:center;gap:8px;padding:7px 11px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;margin-bottom:7px}
+.stakeholder-email{flex:1;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--accent)}
+.stakeholder-role{font-size:9px;color:var(--text-muted);background:var(--surface3);padding:2px 7px;border-radius:3px}
+.stakeholder-remove{background:none;border:none;color:var(--critical);cursor:pointer;font-size:14px;padding:0 3px}
+.freq-options{display:flex;gap:7px;flex-wrap:wrap}
+.freq-btn{padding:6px 12px;border:1px solid var(--border);border-radius:5px;font-size:11px;cursor:pointer;background:none;color:var(--text-muted);font-family:'Syne',sans-serif;transition:all 0.2s}
+.freq-btn.active,.freq-btn:hover{background:rgba(0,212,255,0.1);border-color:var(--accent);color:var(--accent)}
+.trigger-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.trigger-label{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--text-muted);cursor:pointer}
+.email-preview{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:14px;font-size:11px;color:var(--text-muted);line-height:1.6}
+.ep-from{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);margin-bottom:3px}
+.ep-subject{font-weight:700;color:var(--text);margin-bottom:10px;font-size:12px}
+.notif-log-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.notif-log-header{padding:12px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.notif-log-item{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);font-size:11px}
+.notif-log-item:last-child{border-bottom:none}
+.notif-log-icon{font-size:14px;width:20px;text-align:center}
+.notif-log-body{flex:1}
+.notif-log-title{font-weight:600;color:var(--text);margin-bottom:1px}
+.notif-log-sub{color:var(--text-muted);font-size:10px}
+.notif-log-time{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-dim)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:8px;font-size:12px;font-weight:600;z-index:2000;display:none;animation:slideUp 0.3s ease;max-width:320px}
+.toast.success{background:rgba(6,214,160,0.15);border:1px solid rgba(6,214,160,0.4);color:var(--fully)}
+.toast.error{background:rgba(255,58,92,0.15);border:1px solid rgba(255,58,92,0.4);color:var(--critical)}
+.toast.info{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--accent)}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* RULE AREA BAR */
+.rab-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.rab-label{font-size:10px;color:var(--text-muted);width:190px;flex-shrink:0;line-height:1.3}
+.rab-track{flex:1;height:13px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.rab-seg{height:100%;border-radius:3px}
+.rab-total{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);width:24px;text-align:right}
+.section-divider{height:1px;background:var(--border);margin:24px 0}
+
+/* SAVING INDICATOR */
+.saving-indicator{position:fixed;top:70px;right:20px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--accent);padding:4px 12px;border-radius:20px;font-size:10px;display:none;z-index:200}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .sidebar{width:58px}
+  .sidebar .nav-section,.sidebar .nav-label,.sidebar .nav-badge,.sidebar .logo-text{display:none}
+  .main{margin-left:58px}
+  .chart-grid,.phase-timeline,.scoring-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .page{padding:14px}
+  .topbar{padding:0 14px}
+  .kpi-grid{grid-template-columns:1fr 1fr}
+}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- SAVING INDICATOR -->
+<div class="saving-indicator" id="savingIndicator">⟳ Saving...</div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">D</div>
+    <div class="logo-text">DPDPA 2025<span>GAP ANALYSIS PLATFORM</span></div>
+    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+  </div>
+  <div class="nav-section">Overview</div>
+  <div class="nav-item active" onclick="showPage('dashboard')"><span class="nav-icon">📊</span><span class="nav-label">Executive Dashboard</span></div>
+  <div class="nav-section">Compliance</div>
+  <div class="nav-item" onclick="showPage('register')"><span class="nav-icon">📋</span><span class="nav-label">Gap Analysis Register</span><span class="nav-badge">119</span></div>
+  <div class="nav-item" onclick="showPage('enforcement')"><span class="nav-icon">⏱</span><span class="nav-label">Enforcement Readiness</span><span class="nav-badge amber">3</span></div>
+  <div class="nav-item" onclick="showPage('penalties')"><span class="nav-icon">⚖️</span><span class="nav-label">Penalty Reference</span></div>
+  <div class="nav-section">Methodology</div>
+  <div class="nav-item" onclick="showPage('scoring')"><span class="nav-icon">🎯</span><span class="nav-label">Scoring Methodology</span></div>
+  <div class="nav-section">Alerts</div>
+  <div class="nav-item" onclick="openNotifModal()"><span class="nav-icon">🔔</span><span class="nav-label">Email Notifications</span></div>
+</nav>
+
+<!-- MAIN -->
+<div class="main" id="mainContent">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">DPDPA Rules 2025</div>
+      <div class="topbar-sub">G.S.R. 846(E) · 13 Nov 2025 · MeitY</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="api-status" id="apiStatus"><div class="api-dot" id="apiDot"></div><span id="apiStatusText" style="color:var(--text-muted)">Connecting...</span></div>
+    <div class="live-badge"><div class="live-dot"></div>Live</div>
+    <button class="btn btn-ghost" onclick="openNotifModal()">🔔 Alerts</button>
+    <button class="btn btn-primary" onclick="exportCSV()">↓ Export</button>
+  </div>
+
+  <!-- ── DASHBOARD ──────────────────────────────────────────────────────────── -->
+  <div class="page active" id="page-dashboard">
+    <div class="page-header">
+      <div class="gazette-tag">📄 Gazette G.S.R. 846(E) · Official Notification</div>
+      <h1>Executive Dashboard</h1>
+      <p>119 gap items across 18 rule areas. Update Gap Status in the Register — this dashboard recalculates automatically via the live API.</p>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card critical"><div class="kpi-label">Critical Items</div><div class="kpi-value c">23</div><div class="kpi-sub">Up to ₹250 Crore exposure</div></div>
+      <div class="kpi-card high"><div class="kpi-label">High Priority</div><div class="kpi-value h">75</div><div class="kpi-sub">Up to ₹200 Crore exposure</div></div>
+      <div class="kpi-card medium"><div class="kpi-label">Medium Priority</div><div class="kpi-value m">18</div><div class="kpi-sub">Up to ₹50 Crore exposure</div></div>
+      <div class="kpi-card good"><div class="kpi-label">Fully Addressed</div><div class="kpi-value g" id="kpiFullyAddressed">0</div><div class="kpi-sub">Items completed</div></div>
+      <div class="kpi-card info"><div class="kpi-label">Total Items</div><div class="kpi-value a">119</div><div class="kpi-sub">18 Rule Areas · Rules 1–23</div></div>
+      <div class="kpi-card"><div class="kpi-label">Overall Compliance</div><div class="kpi-value" id="kpiPct" style="color:var(--text-muted)">0%</div><div class="kpi-sub">Target: ≥80% by May 2027</div></div>
+    </div>
+
+    <div class="phase-timeline">
+      <div class="phase-card">
+        <div class="phase-header"><div class="phase-dot imm"></div><div><div class="phase-name" style="color:var(--phase-imm)">Phase 1 — IMMEDIATE</div><div class="phase-date">13 November 2025 · Rules 1,2,17–21</div></div></div>
+        <div class="phase-rules">Board constitution · Appellate Tribunal · Government information requests · Schedule 7</div>
+        <div class="phase-count imm">15</div><div class="phase-count-label">items in force NOW</div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-header"><div class="phase-dot p12"></div><div><div class="phase-name" style="color:var(--phase-12)">Phase 2 — +12 MONTHS</div><div class="phase-date">13 November 2026 · Rule 4 only</div></div></div>
+        <div class="phase-rules">Consent Manager registration · Schedule 1 (Parts A &amp; B) · Board-registered CM only</div>
+        <div class="phase-count p12">19</div><div class="phase-count-label">items — deadline approaching</div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-header"><div class="phase-dot p18"></div><div><div class="phase-name" style="color:var(--phase-18)">Phase 3 — +18 MONTHS</div><div class="phase-date">13 May 2027 · Rules 3,5–16,22,23</div></div></div>
+        <div class="phase-rules">All core obligations: consent, security, breach notification, retention, children's data</div>
+        <div class="phase-count p18">85</div><div class="phase-count-label">items — start planning NOW</div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-title">Priority Distribution</div>
+        <div class="donut-wrap">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" fill="none" stroke="var(--surface2)" stroke-width="14"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="var(--critical)" stroke-width="14" stroke-dasharray="58.3 243.4" stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="var(--high)" stroke-width="14" stroke-dasharray="190.2 111.5" stroke-dashoffset="-58.3" transform="rotate(-90 60 60)"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="var(--medium)" stroke-width="14" stroke-dasharray="45.7 255.9" stroke-dashoffset="-248.5" transform="rotate(-90 60 60)"/>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="var(--low)" stroke-width="14" stroke-dasharray="7.6 294" stroke-dashoffset="-294.2" transform="rotate(-90 60 60)"/>
+            <text x="60" y="55" text-anchor="middle" fill="var(--text)" font-size="18" font-weight="800" font-family="JetBrains Mono,monospace">119</text>
+            <text x="60" y="70" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Syne,sans-serif">ITEMS</text>
+          </svg>
+          <div class="legend">
+            <div class="legend-item"><div class="legend-dot" style="background:var(--critical)"></div><span class="legend-label">Critical</span><span class="legend-val" style="color:var(--critical)">23</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--high)"></div><span class="legend-label">High</span><span class="legend-val" style="color:var(--high)">75</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--medium)"></div><span class="legend-label">Medium</span><span class="legend-val" style="color:var(--medium)">18</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--low)"></div><span class="legend-label">Low</span><span class="legend-val" style="color:var(--low)">3</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Max Penalty Exposure by Schedule Item</div>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">Sch.1 — Security</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--critical)"><span>₹250Cr</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Sch.2 — Breach Notification</div><div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--high)"><span>₹200Cr</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Sch.3 — Children's Data</div><div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--high)"><span>₹200Cr</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Sch.4 — SDF Obligations</div><div class="bar-track"><div class="bar-fill" style="width:60%;background:var(--medium)"><span>₹150Cr</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Sch.5–8 — Other</div><div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--fully)"><span>₹50Cr</span></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card" style="margin-bottom:24px">
+      <div class="chart-title">Rule Area Breakdown — Items by Phase</div>
+      <div id="ruleAreaBar"></div>
+    </div>
+
+    <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="kpi-card" style="cursor:pointer" onclick="showPage('register');setTimeout(()=>{document.getElementById('filterPriority').value='Critical';filterRegister()},100)">
+        <div class="kpi-label">🚨 Action Required</div>
+        <div class="kpi-value c" style="font-size:20px;margin-bottom:4px">23 Critical</div>
+        <div class="kpi-sub">Click → filter register to Critical only</div>
+      </div>
+      <div class="kpi-card" style="cursor:pointer" onclick="showPage('register');setTimeout(()=>{document.getElementById('filterPhase').value='Immediate';filterRegister()},100)">
+        <div class="kpi-label">⚡ In Force Now</div>
+        <div class="kpi-value a" style="font-size:20px;margin-bottom:4px">15 Immediate</div>
+        <div class="kpi-sub">Click → filter to Phase 1 items</div>
+      </div>
+      <div class="kpi-card" style="cursor:pointer" onclick="openNotifModal()">
+        <div class="kpi-label">🔔 Stakeholder Alerts</div>
+        <div class="kpi-value" style="font-size:20px;margin-bottom:4px;color:var(--accent)" id="stakeholderCount">Set Up</div>
+        <div class="kpi-sub">Configure email notifications</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── REGISTER ────────────────────────────────────────────────────────────── -->
+  <div class="page" id="page-register">
+    <div class="page-header">
+      <div class="gazette-tag">📋 119 Items · Rules 1–23 + Schedules 1–7</div>
+      <h1>Gap Analysis Register</h1>
+      <p>All 119 compliance obligations. Click any item to expand. Update Gap Status — changes sync to the server in real time.</p>
+    </div>
+    <div class="filter-bar">
+      <input class="search-box" type="text" id="searchInput" placeholder="Search requirements, rules, topics..." oninput="filterRegister()">
+      <select class="filter-select" id="filterPriority" onchange="filterRegister()">
+        <option value="">All Priorities</option>
+        <option value="Critical">Critical</option>
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+      </select>
+      <select class="filter-select" id="filterPhase" onchange="filterRegister()">
+        <option value="">All Phases</option>
+        <option value="Immediate">Immediate</option>
+        <option value="12 Months">12 Months</option>
+        <option value="18 Months">18 Months</option>
+      </select>
+      <select class="filter-select" id="filterStatus" onchange="filterRegister()">
+        <option value="">All Statuses</option>
+        <option value="Not Assessed">Not Assessed</option>
+        <option value="Gap Identified — Critical">Gap — Critical</option>
+        <option value="Gap Identified — High">Gap — High</option>
+        <option value="Gap Identified — Medium">Gap — Medium</option>
+        <option value="Partially Addressed">Partially Addressed</option>
+        <option value="Fully Addressed">Fully Addressed</option>
+        <option value="N/A">N/A</option>
+      </select>
+      <span class="results-count" id="resultsCount">119 items</span>
+    </div>
+    <div id="registerContainer"></div>
+  </div>
+
+  <!-- ── ENFORCEMENT ─────────────────────────────────────────────────────────── -->
+  <div class="page" id="page-enforcement">
+    <div class="page-header">
+      <div class="gazette-tag">⏱ 3 Enforcement Phases</div>
+      <h1>Enforcement Readiness Planner</h1>
+      <p>DPDPA 2025 obligations roll out in three phases. Phase 1 is already in force. 18 months is not long — start immediately.</p>
+    </div>
+    <div class="readiness-timeline">
+      <div class="rt-item"><div class="rt-dot imm">1</div><div class="rt-card">
+        <div class="rt-phase imm">Phase 1 · IMMEDIATE</div><div class="rt-title">13 November 2025 — Rules 1, 2, 17–21</div>
+        <div class="rt-rules">Rules 1, 2, 17–21 in force · 15 items</div>
+        <div class="rt-body">Board constitution and digital office setup. Appellate Tribunal appeal process (Rule 22). Government information requests under Schedule 7 (Rule 23). Search-cum-Selection Committees for Board appointments.</div>
+        <div class="rt-actions imm"><div class="rt-actions-label imm">▶ TODAY: Immediate Actions</div>Confirm legal team briefed on Board procedures. Establish Rule 23 information request process. Set up digital proceedings capability. Review Board inquiry timelines. Assign executive sponsor.</div>
+      </div></div>
+      <div class="rt-item"><div class="rt-dot p12">2</div><div class="rt-card">
+        <div class="rt-phase p12">Phase 2 · +12 MONTHS</div><div class="rt-title">13 November 2026 — Rule 4 (Consent Managers)</div>
+        <div class="rt-rules">Rule 4 only · Schedule 1 (Parts A &amp; B) · 19 items</div>
+        <div class="rt-body">Consent Manager registration opens with the Board. Schedule 1 obligations (Parts A &amp; B) come into force. Data Fiduciaries must only use Board-registered Consent Managers.</div>
+        <div class="rt-actions p12"><div class="rt-actions-label p12">▶ PLAN NOW: 6-Month Checklist</div>Identify all Consent Manager vendors. Verify Board registration if acting as CM. Build Board-registration verification into vendor onboarding. Set 6-month pre-deadline internal review (May 2026).</div>
+      </div></div>
+      <div class="rt-item"><div class="rt-dot p18">3</div><div class="rt-card">
+        <div class="rt-phase p18">Phase 3 · +18 MONTHS</div><div class="rt-title">13 May 2027 — Rules 3, 5–16, 22, 23 (All Core Obligations)</div>
+        <div class="rt-rules">Rules 3, 5–16, 22, 23 — 85 items</div>
+        <div class="rt-body">ALL core obligations: consent notices (Rule 3) · State processing (Rule 5) · security safeguards + 72-hr breach notification (Rules 6–7) · retention/erasure (Rule 8) · contact published (Rule 9) · children's data + verifiable parental consent + no tracking/profiling (Rules 10–12) · SDF DPIA, audit, DPO (Rule 13) · Data Principal rights portal (Rule 14) · cross-border transfers (Rule 15) · research exemption (Rule 16) · government information (Rule 23).</div>
+        <div class="rt-actions p18"><div class="rt-actions-label p18">▶ START NOW: 18 Months Is Not Long</div>Prioritise Critical and High items immediately. Build security controls (Rule 6). Begin children's data programme (Rules 10–12). Draft breach notification templates. Appoint India-based DPO if SDF. Backward-plan from 13 May 2027.</div>
+      </div></div>
+    </div>
+    <div class="section-divider"></div>
+    <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi-card critical"><div class="kpi-label">Critical · 23 Items</div><div style="font-size:12px;color:var(--text-muted);line-height:1.5;margin-top:8px">Immediate action. Executive sponsor. Dedicated workstream. Up to ₹250 crore.</div></div>
+      <div class="kpi-card high"><div class="kpi-label">High · 75 Items</div><div style="font-size:12px;color:var(--text-muted);line-height:1.5;margin-top:8px">Plan and resource now. Q1–Q2 delivery. Up to ₹200 crore exposure.</div></div>
+      <div class="kpi-card medium"><div class="kpi-label">Medium · 18 Items</div><div style="font-size:12px;color:var(--text-muted);line-height:1.5;margin-top:8px">Include in roadmap. Q2–Q3 delivery. Up to ₹50 crore exposure.</div></div>
+      <div class="kpi-card good"><div class="kpi-label">Low · 3 Items</div><div style="font-size:12px;color:var(--text-muted);line-height:1.5;margin-top:8px">Monitor. Include in annual review. Administrative / minor exposure.</div></div>
+    </div>
+  </div>
+
+  <!-- ── PENALTIES ───────────────────────────────────────────────────────────── -->
+  <div class="page" id="page-penalties">
+    <div class="page-header">
+      <div class="gazette-tag">⚖️ DPDPA 2023 — First Schedule · Penalty Schedule</div>
+      <h1>Penalty Reference &amp; Mitigation</h1>
+      <p>Penalties per incident, may be cumulative. Board considers: nature, gravity, duration, data type, repetition, financial gains, remediation. Source: DPDPA 2023 First Schedule + G.S.R. 846(E).</p>
+    </div>
+    <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px">
+      <div class="kpi-card critical"><div class="kpi-label">Maximum Exposure</div><div class="kpi-value c" style="font-size:24px">₹250 Cr</div><div class="kpi-sub">Security safeguards failure</div></div>
+      <div class="kpi-card high"><div class="kpi-label">Breach Notification</div><div class="kpi-value h" style="font-size:24px">₹200 Cr</div><div class="kpi-sub">72-hr notification failure</div></div>
+      <div class="kpi-card high"><div class="kpi-label">Children's Data</div><div class="kpi-value h" style="font-size:24px">₹200 Cr</div><div class="kpi-sub">Tracking / consent violations</div></div>
+      <div class="kpi-card medium"><div class="kpi-label">Continuing Failure</div><div class="kpi-value m" style="font-size:24px">₹10K/day</div><div class="kpi-sub">Board information requests</div></div>
+    </div>
+    <div class="table-wrap">
+      <div class="table-header-bar"><h3>Schedule Item Reference — 9 Items</h3><span style="font-size:10px;color:var(--text-muted)">DPDPA 2023 First Schedule</span></div>
+      <table>
+        <thead><tr><th>Schedule Item</th><th>Breach Description</th><th>Max Penalty</th><th>Rule</th><th>Key Mitigation</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Sch. Item 1</td><td>Failure to take reasonable security safeguards leading to personal data breach</td><td><span class="penalty-tag">₹250 Crore</span></td><td class="mono">Rule 6</td><td style="font-size:10px;color:var(--text-muted)">Encryption, RBAC, SIEM, backups, 1-yr log retention, Processor security clauses, ISMS</td></tr>
+          <tr><td class="mono">Sch. Item 2</td><td>Failure to notify Board and Data Principals of a personal data breach</td><td><span class="penalty-tag p200">₹200 Crore</span></td><td class="mono">Rule 7</td><td style="font-size:10px;color:var(--text-muted)">IRP; pre-draft Board + DP templates; assign 72-hr clock owner; breach register</td></tr>
+          <tr><td class="mono">Sch. Item 3</td><td>Non-fulfilment of children's data obligations (verifiable parental consent, no tracking/profiling)</td><td><span class="penalty-tag p200">₹200 Crore</span></td><td class="mono">Rules 10–12</td><td style="font-size:10px;color:var(--text-muted)">Age-verification; verifiable parental consent; audit tracking; Schedule 4 exemptions</td></tr>
+          <tr><td class="mono">Sch. Item 4</td><td>Failure to fulfil SDF obligations (DPIA, audit, DPO, algorithmic due diligence)</td><td><span class="penalty-tag p150">₹150 Crore</span></td><td class="mono">Rule 13</td><td style="font-size:10px;color:var(--text-muted)">Assess SDF status; appoint India-based DPO; annual DPIA + audit; algorithmic inventory</td></tr>
+          <tr><td class="mono">Sch. Item 5</td><td>Non-compliance with Data Fiduciary duties (notice, consent, rights, retention, cross-border)</td><td><span class="penalty-tag p50">₹50 Crore</span></td><td class="mono">Rules 3,8,14,15</td><td style="font-size:10px;color:var(--text-muted)">Standalone notice; 3-yr erasure; unified rights portal; cross-border transfer inventory</td></tr>
+          <tr><td class="mono">Sch. Item 6</td><td>Non-compliance with duties of Data Processors</td><td><span class="penalty-tag p50">₹50 Crore</span></td><td class="mono">Rule 6(1)(f)</td><td style="font-size:10px;color:var(--text-muted)">Security safeguards clause in all Processor contracts; audit rights; annual review</td></tr>
+          <tr><td class="mono">Sch. Item 7</td><td>Violation of any direction of the Board or Appellate Tribunal</td><td><span class="penalty-tag p50">₹50 Crore</span></td><td class="mono">Rules 22,23</td><td style="font-size:10px;color:var(--text-muted)">Government request response process; Rule 23(2) non-disclosure training; 1-yr log retention</td></tr>
+          <tr><td class="mono">Sch. Item 8</td><td>Breach of any obligation not specified in Items 1–7</td><td><span class="penalty-tag p50">₹50 Crore</span></td><td class="mono">All Rules</td><td style="font-size:10px;color:var(--text-muted)">Comprehensive compliance programme covering all Rules 1–23</td></tr>
+          <tr><td class="mono">Section 26(6)</td><td>Failure to comply with Board's direction to provide information (continuing)</td><td><span class="penalty-tag p50">₹10,000/day</span></td><td class="mono">Rule 23</td><td style="font-size:10px;color:var(--text-muted)">Information request tracking; single point of contact; SLA for Board responses</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.15);border-radius:8px;padding:14px;font-size:11px;color:var(--text-muted);line-height:1.7"><strong style="color:var(--accent)">Note:</strong> Penalties are per incident and may be cumulative. The Board takes into account the nature, gravity, duration, type of data, volume of data subjects, repetition, financial gains, and subsequent remediation. Active compliance programmes significantly reduce exposure.</div>
+  </div>
+
+  <!-- ── SCORING ─────────────────────────────────────────────────────────────── -->
+  <div class="page" id="page-scoring">
+    <div class="page-header">
+      <div class="gazette-tag">🎯 Compliance Scoring Framework</div>
+      <h1>Scoring Methodology</h1>
+      <p>Consistently rate risk scores, assign gap statuses, and track compliance metrics across your organisation.</p>
+    </div>
+    <div class="scoring-grid">
+      <div class="scoring-card">
+        <h3>1. Risk Score (1–5)</h3>
+        <div class="score-row"><div class="score-num" style="color:var(--text-muted)">1</div><div class="score-label" style="color:var(--text-muted)">Negligible</div><div class="score-def">Minimal enforcement likelihood; no sensitive data; awareness item.</div></div>
+        <div class="score-row"><div class="score-num" style="color:var(--fully)">2</div><div class="score-label" style="color:var(--fully)">Low</div><div class="score-def">Low probability; limited data volume; procedural gap; no immediate impact.</div></div>
+        <div class="score-row"><div class="score-num" style="color:var(--medium)">3</div><div class="score-label" style="color:var(--medium)">Medium</div><div class="score-def">Moderate risk; medium data volume or sensitivity; needs addressing.</div></div>
+        <div class="score-row"><div class="score-num" style="color:var(--high)">4</div><div class="score-label" style="color:var(--high)">High</div><div class="score-def">High enforcement probability; large data volume; significant exposure.</div></div>
+        <div class="score-row"><div class="score-num" style="color:var(--critical)">5</div><div class="score-label" style="color:var(--critical)">Critical</div><div class="score-def">Severe risk; highly sensitive data; immediate regulatory exposure.</div></div>
+      </div>
+      <div class="scoring-card">
+        <h3>2. Gap Status Definitions</h3>
+        <div class="score-row"><div class="score-num" style="color:var(--text-dim);font-size:14px">●</div><div class="score-label" style="color:var(--text-dim);font-size:10px">Not Assessed</div><div class="score-def">Not yet reviewed. Starting position — no evidence required.</div></div>
+        <div class="score-row"><div class="score-num" style="color:var(--critical);font-size:14px">●</div><div class="score-label" style="color:var(--critical);font-size:10px">Gap — Critical</div><div class="score-def">Critical risk gap. Immediate escalation. Executive notification required.</div></div>
+        <div class="score-row"><div class="score-num" style="color:var(--high);font-size:14px">●</div><div class="score-label" style="color:var(--high);font-size:10px">Gap — High</div><div class="score-def">High risk gap. Urgent action. Owner must be assigned.</div></div>
+        <div class="score-row"><div class="score-num" style="color:var(--medium);font-size:14px">●</div><div class="score-label" style="color:var(--medium);font-size:10px">Gap — Medium</div><div class="score-def">Medium risk. Planned action required. Document assessment.</div></div>
+        <div class="score-row"><div class="score-num" style="color:var(--partial);font-size:14px">◐</div><div class="score-label" style="color:var(--partial);font-size:10px">Partial</div><div class="score-def">Remediation underway. Evidence of progress. Interim controls documented.</div></div>
+        <div class="score-row"><div class="score-num" style="color:var(--fully);font-size:14px">✓</div><div class="score-label" style="color:var(--fully);font-size:10px">Fully Addressed</div><div class="score-def">Requirement met. Evidence filed. No residual gap. Audit sign-off.</div></div>
+      </div>
+      <div class="scoring-card">
+        <h3>3. Compliance Score Formulas</h3>
+        <div class="formula-box"><div class="formula-box-title" style="color:var(--accent)">Overall % Addressed</div><div class="formula-box-code">Fully Addressed ÷ Total Applicable × 100</div><div class="formula-box-note">Target: ≥80% before 13 May 2027</div></div>
+        <div class="formula-box"><div class="formula-box-title" style="color:var(--critical)">Critical Item Score</div><div class="formula-box-code">Critical Fully Addressed ÷ Total Critical × 100</div><div class="formula-box-note">Target: 100% before enforcement deadline</div></div>
+        <div class="formula-box"><div class="formula-box-title" style="color:var(--medium)">Weighted Risk Score</div><div class="formula-box-code">Σ(Risk Score × [1 | 0.5 | 0])</div><div class="formula-box-note">Lower = better. Track month-on-month reduction.</div></div>
+        <div class="formula-box"><div class="formula-box-title" style="color:var(--phase-imm)">Phase 1 Readiness</div><div class="formula-box-code">Immediate Fully Addressed ÷ Total Immediate × 100</div><div class="formula-box-note">Must be 100% — rules are already in force</div></div>
+      </div>
+      <div class="scoring-card">
+        <h3>4. Review Cadence</h3>
+        <div class="review-item"><div class="review-icon">📅</div><div><div class="review-title">Monthly (until May 2027)</div><div class="review-desc">Update Gap Status for all items. Recalculate score. Report to executive sponsor. Owner: DPO / Compliance Lead</div></div></div>
+        <div class="review-item"><div class="review-icon">🔄</div><div><div class="review-title">New Processing Activity</div><div class="review-desc">Add to register or check existing items. Update risk scores. Owner: DPO / Privacy team</div></div></div>
+        <div class="review-item"><div class="review-icon">🚨</div><div><div class="review-title">After Any Breach</div><div class="review-desc">Review Rule 6 and Rule 7 items. Update breach register. Owner: DPO / CISO</div></div></div>
+        <div class="review-item"><div class="review-icon">📜</div><div><div class="review-title">Board / Government Order</div><div class="review-desc">Review relevant rule area. Update status and target dates. Owner: DPO / Legal</div></div></div>
+        <div class="review-item"><div class="review-icon">🏁</div><div><div class="review-title">13 May 2027 — Final Deadline</div><div class="review-desc">Final review. No Critical/High gaps outstanding. Evidence filed. Owner: DPO / Legal / Board</div></div></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end main -->
+
+<!-- ── NOTIFICATION MODAL ───────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="notifModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>🔔 Email Notification Settings</h2>
+      <button class="modal-close" onclick="closeNotifModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="form-group">
+        <label class="form-label">Stakeholders</label>
+        <div class="stakeholder-list" id="stakeholderList"><div style="font-size:11px;color:var(--text-dim);padding:6px 0">No stakeholders added yet.</div></div>
+        <div class="form-row">
+          <div class="form-group"><input class="form-input" type="email" id="newEmail" placeholder="email@organisation.com"></div>
+          <div class="form-group"><select class="filter-select form-input" id="newRole" style="width:140px"><option>DPO</option><option>CISO</option><option>Legal Counsel</option><option>CEO</option><option>Compliance Lead</option><option>Board Member</option><option>Privacy Team</option></select></div>
+          <button class="btn btn-primary" onclick="addStakeholder()" style="height:34px;align-self:flex-end">+ Add</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Notification Frequency</label>
+        <div class="freq-options" id="freqOptions">
+          <button class="freq-btn active" data-freq="Daily">Daily Digest</button>
+          <button class="freq-btn" data-freq="Weekly">Weekly Summary</button>
+          <button class="freq-btn" data-freq="Monthly">Monthly Report</button>
+          <button class="freq-btn" data-freq="Critical Only">Critical Alerts Only</button>
+          <button class="freq-btn" data-freq="Deadline">Deadline Reminders</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Alert Triggers</label>
+        <div class="trigger-grid">
+          <label class="trigger-label"><input type="checkbox" id="trig-critical" checked style="accent-color:var(--accent)"> Critical gap identified</label>
+          <label class="trigger-label"><input type="checkbox" id="trig-deadline" checked style="accent-color:var(--accent)"> Deadline approaching (30/60/90 days)</label>
+          <label class="trigger-label"><input type="checkbox" id="trig-statusChange" checked style="accent-color:var(--accent)"> Gap status change</label>
+          <label class="trigger-label"><input type="checkbox" id="trig-weekly" style="accent-color:var(--accent)"> Weekly compliance score</label>
+          <label class="trigger-label"><input type="checkbox" id="trig-phase" checked style="accent-color:var(--accent)"> Phase enforcement date (90 days)</label>
+          <label class="trigger-label"><input type="checkbox" id="trig-assigned" style="accent-color:var(--accent)"> New item assigned to owner</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email Preview</label>
+        <div class="email-preview">
+          <div class="ep-from">From: dpdpa-compliance@yourorg.com · To: [stakeholders]</div>
+          <div class="ep-subject" id="previewSubject">📊 DPDPA 2025 — Daily Compliance Digest</div>
+          <div id="previewBody">Summary: 119 items · 0 Fully Addressed · 23 Critical gaps outstanding.<br><br>⚠️ Phase 1 (Rules 17–21) is IN FORCE since 13 Nov 2025 — 15 items.<br>Next deadline: 13 November 2026 (Rule 4 — Consent Managers).<br><br>— DPDPA Gap Analysis Platform</div>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label" style="display:flex;align-items:center;justify-content:space-between">
+          Notification Log
+          <button class="btn btn-ghost" onclick="testEmail()" style="font-size:10px;padding:4px 10px">Send Test Email</button>
+        </label>
+        <div class="notif-log-wrap">
+          <div class="notif-log-header"><span>Recent Activity</span><span style="font-size:10px;color:var(--text-muted)" id="logCount">0 events</span></div>
+          <div id="notifLogItems"><div class="notif-log-item"><div class="notif-log-icon">📧</div><div class="notif-log-body"><div class="notif-log-title">Platform ready</div><div class="notif-log-sub">Add stakeholders and save to activate notifications</div></div><div class="notif-log-time">Now</div></div></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeNotifModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveNotifications()">💾 Save &amp; Activate</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── DATA ─────────────────────────────────────────────────────────────────────
+const RULE_AREAS=[
+  {name:"Rule 1 & 2 — Commencement & Definitions",items:5},
+  {name:"Rule 3 — Notice to Data Principal",phase:"18 Months",items:8},
+  {name:"Rule 4 — Consent Managers",phase:"12 Months",items:18},
+  {name:"Rule 5 — Processing by State/Instrumentalities",phase:"18 Months",items:9},
+  {name:"Rule 6 — Reasonable Security Safeguards",phase:"18 Months",items:8},
+  {name:"Rule 7 — Personal Data Breach Notification",phase:"18 Months",items:10},
+  {name:"Rule 8 — Data Retention & Erasure",phase:"18 Months",items:7},
+  {name:"Rule 9 — Contact Information for Queries",phase:"18 Months",items:2},
+  {name:"Rule 10 — Verifiable Consent for Children's Data",phase:"18 Months",items:6},
+  {name:"Rule 11 — Verifiable Consent for Disabled Persons",phase:"18 Months",items:4},
+  {name:"Rule 12 — Exemptions for Children's Data",phase:"18 Months",items:9},
+  {name:"Rule 13 — Significant Data Fiduciaries (SDF)",phase:"18 Months",items:7},
+  {name:"Rule 14 — Rights of Data Principals",phase:"18 Months",items:5},
+  {name:"Rule 15 — Cross-Border Transfers",phase:"18 Months",items:4},
+  {name:"Rule 16 — Research, Archiving & Statistical Exemption",phase:"18 Months",items:2},
+  {name:"Rules 17–21 — Data Protection Board",phase:"Immediate",items:7},
+  {name:"Rule 22 — Appeal to Appellate Tribunal",phase:"Immediate",items:4},
+  {name:"Rule 23 — Government Information Requests (Sch.7)",phase:"Immediate",items:4},
+];
+const GAP_DATA=[
+  {num:1,rule:"Rule 1(2)",topic:"Rules 17–21 in force immediately",req:"Rules 1,2 and 17–21 came into force on 13 November 2025. Board constitution process must be initiated without delay.",question:"Has a phased compliance roadmap been created with owners, milestones, and budget for all three enforcement phases?",gaps:"No roadmap exists; phases not mapped to internal workplans; budget not allocated; owners not assigned",remediation:"Create phased compliance roadmap; assign executive sponsor; allocate budget; set milestone review dates for all three phases",phase:"Immediate",priority:"High",appliesTo:"All Entities",penaltyRef:"—",area:"Rule 1 & 2 — Commencement & Definitions"},
+  {num:2,rule:"Rule 1(3)",topic:"Rule 4 — Consent Manager regime",req:"Rule 4 (Consent Managers) comes into force one year after 13 November 2025, i.e. 13 November 2026.",question:"Is the organisation tracking 13 November 2026 as the Consent Manager Rule 4 effective date?",gaps:"No date tracking; Consent Manager vendor not identified; registration process not started",remediation:"Add 13 Nov 2026 to compliance calendar; identify CM vendors; verify/plan Board registration",phase:"12 Months",priority:"High",appliesTo:"Consent Manager",penaltyRef:"—",area:"Rule 1 & 2 — Commencement & Definitions"},
+  {num:3,rule:"Rule 1(4)",topic:"Rules 3,5–16,22,23 — main obligations",req:"Rules 3,5–16,22 and 23 come into force 18 months after 13 November 2025, i.e. 13 May 2027.",question:"Is 13 May 2027 flagged as the core obligation deadline with a backward-planned workplan?",gaps:"13 May 2027 not tracked; no backward-planned workplan; critical path not identified",remediation:"Backward-plan from 13 May 2027; identify critical path items; assign phase owners",phase:"18 Months",priority:"High",appliesTo:"All Data Fiduciaries",penaltyRef:"—",area:"Rule 1 & 2 — Commencement & Definitions"},
+  {num:4,rule:"Rule 2(1)(c)",topic:"User account definition understood",req:"'User account' covers online accounts, profiles, pages, handles, email addresses, mobile numbers and any other presence used to access services.",question:"Has the organisation inventoried all systems that create or manage 'user accounts' as broadly defined?",gaps:"User account definition narrowly interpreted; handles, email and mobile not mapped; legacy accounts excluded",remediation:"Expand data mapping to include all account types per Rule 2(1)(c); update ROPA; ensure erasure processes cover all types",phase:"18 Months",priority:"Medium",appliesTo:"All Data Fiduciaries",penaltyRef:"—",area:"Rule 1 & 2 — Commencement & Definitions"},
+  {num:5,rule:"Rule 2(1)(d)",topic:"Verifiable consent definition understood",req:"'Verifiable consent' for children's and disabled persons' data must meet Rule 2(1)(d) standards.",question:"Does the organisation understand that the consent mechanism itself must be verifiable?",gaps:"Verifiable consent confused with standard consent; age-verification not mapped; Schedule 4 exemptions not reviewed",remediation:"Map all consent touchpoints; review Schedule 4 exemptions; design verifiable consent mechanisms for Rules 10 and 11",phase:"18 Months",priority:"High",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 3",area:"Rule 1 & 2 — Commencement & Definitions"},
+  {num:6,rule:"Rule 3(a)",topic:"Notice is self-contained and independent",req:"The notice must be a separate, standalone document — not buried in terms and conditions or privacy policies.",question:"Is your consent/processing notice a standalone document, completely separate from terms of service?",gaps:"Notice embedded in T&C; no standalone notice; notice refers to other documents for key information",remediation:"Create standalone DPDPA-compliant notice; decouple from T&C; ensure all required information is self-contained",phase:"18 Months",priority:"High",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 5",area:"Rule 3 — Notice to Data Principal"},
+  {num:7,rule:"Rule 3(b)",topic:"Notice in clear and plain language",req:"Notice must be in clear and plain language easy to understand, not legal jargon.",question:"Is the notice written in simple, plain language that a layperson can understand without legal training?",gaps:"Notice uses complex legal language; technical jargon not explained; readability not tested",remediation:"Rewrite notice in plain English; test readability; target Flesch-Kincaid score ≥60; obtain legal sign-off",phase:"18 Months",priority:"High",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 5",area:"Rule 3 — Notice to Data Principal"},
+  {num:8,rule:"Rule 3(b)(i)",topic:"Itemised description of personal data",req:"Notice must contain an itemised description of the personal data being collected.",question:"Does the notice list each category of personal data collected with specific itemisation?",gaps:"Notice uses generic descriptions; no itemised list; sensitive data categories not specifically called out",remediation:"Audit all data collection points; create itemised data category list; update notice with specific enumeration",phase:"18 Months",priority:"High",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 5",area:"Rule 3 — Notice to Data Principal"},
+  {num:9,rule:"Rule 3(b)(ii)",topic:"Specified purpose AND goods/services description",req:"Notice must state the specified purpose of processing AND describe the goods/services being delivered.",question:"Does the notice explicitly state both the specific purpose AND the goods/services for each data category?",gaps:"Purpose stated generically; goods/services not linked to each data category; purpose too vague",remediation:"Map each data category to specific purpose + service; rewrite purpose statements; legal review",phase:"18 Months",priority:"High",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 5",area:"Rule 3 — Notice to Data Principal"},
+  {num:10,rule:"Rule 3(c)",topic:"Communication link for consent withdrawal",req:"Notice must include a communication link through which Data Principals can withdraw consent.",question:"Does the notice include a direct, accessible link for Data Principals to withdraw consent at any time?",gaps:"No withdrawal link in notice; withdrawal process requires contacting support; not prominently displayed",remediation:"Build consent withdrawal portal; include direct link in notice; ensure withdrawal equals consent-giving ease",phase:"18 Months",priority:"High",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 5",area:"Rule 3 — Notice to Data Principal"},
+  {num:11,rule:"Rule 3(c)(i)",topic:"Withdrawal as easy as giving consent",req:"The process for withdrawing consent must be as easy as the process for giving consent — no additional friction.",question:"Is the consent withdrawal process exactly as easy and frictionless as the consent-giving process?",gaps:"Withdrawal requires email or form; takes longer than consent-giving; dark patterns delay withdrawal",remediation:"Implement one-click withdrawal matching one-click consent; remove dark patterns; test UX parity; document equality",phase:"18 Months",priority:"Critical",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 5",area:"Rule 3 — Notice to Data Principal"},
+  {num:12,rule:"Rule 3(c)(ii)",topic:"Link to exercise all rights published",req:"Notice must include a link to a page where Data Principals can exercise all their rights.",question:"Does the notice contain a direct link to a portal where Data Principals can exercise all five rights?",gaps:"No rights portal link in notice; rights mentioned in privacy policy only; no unified portal exists",remediation:"Build unified Data Principal rights portal; include direct link in notice; ensure all rights accessible",phase:"18 Months",priority:"High",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 5",area:"Rule 3 — Notice to Data Principal"},
+  {num:13,rule:"Rule 3(c)(iii)",topic:"Link to make complaint to Board published",req:"Notice must include a link through which Data Principals can make a complaint to the Data Protection Board.",question:"Does the notice include a direct link to the Data Protection Board's complaint portal?",gaps:"No Board complaint link in notice; link not updated once Board portal is live",remediation:"Add Board complaint portal link to notice; monitor Board portal URL; test link quarterly; update if URL changes",phase:"18 Months",priority:"High",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 5",area:"Rule 3 — Notice to Data Principal"},
+  {num:14,rule:"Rule 4(1)+Sch.1A",topic:"Consent Manager registration — eligibility",req:"Entities acting as Consent Managers must be registered with the Board. Registration criteria include minimum net worth per Schedule 1A.",question:"Has the organisation assessed whether it meets Schedule 1A eligibility criteria?",gaps:"Schedule 1A eligibility not assessed; net worth threshold not checked; technical infrastructure not evaluated",remediation:"Assess Schedule 1A eligibility; calculate net worth against threshold; evaluate technical infrastructure",phase:"12 Months",priority:"High",appliesTo:"Consent Manager",penaltyRef:"—",area:"Rule 4 — Consent Managers"},
+  {num:15,rule:"Rule 4(1)",topic:"Consent Manager registration — application filed",req:"Consent Manager registration application must be filed with the Board before Rule 4 comes into force on 13 November 2026.",question:"Has a Consent Manager registration application been prepared or filed with the Data Protection Board?",gaps:"Registration application not prepared; no engagement with Board; deadline not on compliance calendar",remediation:"Engage legal team on registration requirements; prepare application; engage Board once portal opens",phase:"12 Months",priority:"High",appliesTo:"Consent Manager",penaltyRef:"—",area:"Rule 4 — Consent Managers"},
+  {num:16,rule:"Rule 4(2)",topic:"Board inquiry — co-operation",req:"Consent Managers must co-operate with Board inquiries, provide requested information, and not obstruct proceedings.",question:"Is there an established process for responding to Board inquiries within required timeframes?",gaps:"No Board inquiry response process; no designated contact; document retrieval not systematised",remediation:"Establish Board inquiry response process; designate Board liaison; define internal SLAs; train key staff",phase:"12 Months",priority:"Medium",appliesTo:"Consent Manager",penaltyRef:"—",area:"Rule 4 — Consent Managers"},
+  {num:31,rule:"Rule 6(1)(a)",topic:"Encryption of personal data",req:"Reasonable security safeguards must include encryption of personal data in transit and at rest.",question:"Is personal data encrypted both in transit (TLS 1.2+) and at rest (AES-256 or equivalent)?",gaps:"Personal data stored unencrypted in some databases; TLS not enforced on all endpoints; no key management",remediation:"Implement AES-256 at rest; enforce TLS 1.2+ in transit; extend to backups; implement key management; document standards",phase:"18 Months",priority:"Critical",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 1",area:"Rule 6 — Reasonable Security Safeguards"},
+  {num:32,rule:"Rule 6(1)(b)",topic:"Access controls — Role Based Access Control",req:"Reasonable security safeguards must include RBAC ensuring staff access only data necessary for their role.",question:"Is a Role-Based Access Control (RBAC) system in place across all systems holding personal data?",gaps:"Broad database access granted; RBAC not implemented; no access review; shared credentials in use",remediation:"Implement RBAC across all systems; conduct access audit; remove broad access; quarterly access reviews",phase:"18 Months",priority:"Critical",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 1",area:"Rule 6 — Reasonable Security Safeguards"},
+  {num:33,rule:"Rule 6(1)(c)",topic:"Logging and monitoring — SIEM",req:"Reasonable security safeguards must include logging and monitoring capabilities including SIEM.",question:"Is a SIEM or equivalent monitoring system in place to detect and alert on potential data breaches?",gaps:"No SIEM in place; logs not centralised; no real-time alerting; log retention less than 1 year",remediation:"Implement SIEM; centralise logs; configure breach detection alerts; ensure 1-year log retention; assign SOC",phase:"18 Months",priority:"Critical",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 1",area:"Rule 6 — Reasonable Security Safeguards"},
+  {num:34,rule:"Rule 6(1)(d)",topic:"Backups of personal data",req:"Reasonable security safeguards must include regular backups of personal data.",question:"Are regular, tested backups of all personal data performed with backups stored securely?",gaps:"No regular backup schedule; backups not tested for recovery; backup media unencrypted; no offsite backup",remediation:"Implement automated backups; encrypt media; store offsite; test recovery quarterly; define RTO/RPO",phase:"18 Months",priority:"High",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 1",area:"Rule 6 — Reasonable Security Safeguards"},
+  {num:39,rule:"Rule 7(1)",topic:"72-hour breach notification to Board",req:"Personal data breaches must be notified to the Data Protection Board within 72 hours.",question:"Is there an IRP with a defined 72-hour clock process for notifying the Board of personal data breaches?",gaps:"No IRP exists; 72-hour clock not defined; Board notification template not drafted; process untested",remediation:"Build IRP; assign breach notification owner; pre-draft Board notification template; define 72-hr escalation; tabletop test",phase:"18 Months",priority:"Critical",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 2",area:"Rule 7 — Personal Data Breach Notification"},
+  {num:40,rule:"Rule 7(2)",topic:"Data Principal breach notification",req:"Affected Data Principals must be notified of a personal data breach including breach description, data affected, and steps taken.",question:"Is there a process and pre-drafted template for notifying affected Data Principals of a breach?",gaps:"No Data Principal notification template; no process for identifying affected individuals; mass notification capability not built",remediation:"Draft Data Principal breach notification template; build affected-individual identification process; integrate with IRP",phase:"18 Months",priority:"Critical",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 2",area:"Rule 7 — Personal Data Breach Notification"},
+  {num:54,rule:"Rule 10(1)",topic:"Age verification for children's processing",req:"Before processing children's data (under 18), Data Fiduciaries must verify the age of the Data Principal.",question:"Is an age-verification mechanism in place at all user registration and data collection touchpoints?",gaps:"No age verification at registration; DOB field not mandatory or not verified; children's data mixed with adult data",remediation:"Implement age-gate or DOB verification at all registration flows; flag under-18 accounts; build children's data segment",phase:"18 Months",priority:"Critical",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 3",area:"Rule 10 — Verifiable Consent for Children's Data"},
+  {num:55,rule:"Rule 10(2)",topic:"Verifiable parental consent mechanism",req:"Processing children's data requires verifiable consent from a parent or guardian.",question:"Is there a verifiable parental/guardian consent mechanism meeting Rule 2(1)(d) definition of verifiable consent?",gaps:"Only standard checkbox consent for children; no parental verification; guardian identity not confirmed",remediation:"Design verifiable parental consent mechanism; consider OTP verification; document consent chain; legal sign-off",phase:"18 Months",priority:"Critical",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 3",area:"Rule 10 — Verifiable Consent for Children's Data"},
+  {num:56,rule:"Rule 10(3)",topic:"No tracking or profiling of children",req:"Processing of children's data must not include tracking, behavioural monitoring, or profiling of children.",question:"Are all tracking technologies and profiling algorithms disabled or excluded for identified child users?",gaps:"Tracking pixels fire for all users; behavioural analytics not age-segmented; advertising algorithms profile children",remediation:"Disable all tracking/profiling for child users; audit analytics platforms; implement age-based segmentation; DPO sign-off",phase:"18 Months",priority:"Critical",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 3",area:"Rule 10 — Verifiable Consent for Children's Data"},
+  {num:75,rule:"Rule 13(1)",topic:"SDF status assessment",req:"Organisations must assess whether they qualify as Significant Data Fiduciaries based on Board designation criteria.",question:"Has the organisation assessed whether it meets criteria for designation as a Significant Data Fiduciary?",gaps:"SDF assessment not conducted; no analysis of data volume, sensitivity, or systemic risk; no legal opinion",remediation:"Conduct SDF designation risk assessment; obtain legal opinion; monitor Board notifications for SDF designations",phase:"18 Months",priority:"High",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 4",area:"Rule 13 — Significant Data Fiduciaries (SDF)"},
+  {num:76,rule:"Rule 13(2)",topic:"Data Protection Officer appointment",req:"Significant Data Fiduciaries must appoint a DPO based in India with a reporting line to the Board.",question:"Has an India-based DPO been appointed with required Board-reporting-line authority?",gaps:"No DPO appointed; India-based requirement not met; DPO lacks direct Board reporting authority",remediation:"Appoint India-based DPO; define DPO role with Board reporting line; register DPO with Board; provide authority",phase:"18 Months",priority:"Critical",appliesTo:"Significant Data Fiduciary",penaltyRef:"Sch. Item 4",area:"Rule 13 — Significant Data Fiduciaries (SDF)"},
+  {num:77,rule:"Rule 13(3)",topic:"Annual Data Protection Impact Assessment",req:"SDFs must conduct an annual DPIA and submit it to the Board.",question:"Is an annual DPIA process established with methodology, scope, and Board submission procedure?",gaps:"No DPIA conducted; DPIA methodology not defined; Board submission process unknown; no DPIA owner",remediation:"Establish DPIA methodology; appoint DPIA owner; conduct first DPIA; develop Board submission process",phase:"18 Months",priority:"High",appliesTo:"Significant Data Fiduciary",penaltyRef:"Sch. Item 4",area:"Rule 13 — Significant Data Fiduciaries (SDF)"},
+  {num:82,rule:"Rule 14(1)",topic:"Data Principal rights portal",req:"Data Fiduciaries must provide a mechanism for Data Principals to exercise their rights: access, correction, erasure, grievance, and nomination.",question:"Is there a unified rights portal allowing Data Principals to exercise all five rights in one place?",gaps:"Rights scattered across different channels; no unified portal; some rights not accessible; rights requests tracked manually",remediation:"Build unified Data Principal rights portal; implement all five rights; define response SLAs; publish portal link in notice",phase:"18 Months",priority:"High",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 5",area:"Rule 14 — Rights of Data Principals"},
+  {num:87,rule:"Rule 15(1)",topic:"Cross-border transfer inventory",req:"Personal data may only be transferred to countries/territories notified by the Central Government.",question:"Is there a complete inventory of all cross-border personal data transfers including destination countries and transfer mechanisms?",gaps:"No cross-border transfer inventory; processors in non-notified countries not identified; transfer mechanisms not documented",remediation:"Conduct cross-border transfer audit; build transfer inventory; map all international data flows; contingency plan for prohibited transfers",phase:"18 Months",priority:"High",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 5",area:"Rule 15 — Cross-Border Transfers"},
+  {num:101,rule:"Rule 17",topic:"Board member appointment process",req:"The Central Government must constitute the Data Protection Board — the Search-cum-Selection Committee process must begin immediately.",question:"Is the organisation tracking Board constitution progress and preparing for Board oversight?",gaps:"Board constitution not tracked; no preparation for Board oversight; regulatory engagement strategy absent",remediation:"Monitor Central Government notifications on Board constitution; prepare regulatory engagement strategy; prepare for Board inquiries",phase:"Immediate",priority:"High",appliesTo:"All Entities",penaltyRef:"—",area:"Rules 17–21 — Data Protection Board"},
+  {num:102,rule:"Rule 18",topic:"Board digital proceedings infrastructure",req:"The Board must conduct proceedings digitally — entities must be capable of participating in digital proceedings.",question:"Is the organisation capable of participating in digital Board proceedings?",gaps:"No digital proceedings capability; document management not set up; IT infrastructure not tested",remediation:"Establish digital proceedings capability; test video conferencing; implement document management; train legal team",phase:"Immediate",priority:"Medium",appliesTo:"All Entities",penaltyRef:"—",area:"Rules 17–21 — Data Protection Board"},
+  {num:116,rule:"Rule 23(1)",topic:"Government information request process",req:"Data Fiduciaries must respond to government information requests under Schedule 7 promptly and within specified timeframes.",question:"Is there an established process for receiving, logging, reviewing, and responding to government information requests?",gaps:"No government information request process; requests not logged; response timeframes not defined; no designated contact",remediation:"Build government information request process; assign single point of contact; implement logging; define SLAs; train key staff",phase:"Immediate",priority:"High",appliesTo:"All Data Fiduciaries",penaltyRef:"Sch. Item 7",area:"Rule 23 — Government Information Requests (Sch.7)"},
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let gapStatuses={};
+let stakeholders=[];
+let activeFreq='Daily';
+let expandedCards=new Set();
+let saveTimeout=null;
+
+// ─── API HELPERS ──────────────────────────────────────────────────────────────
+async function api(method,path,body){
+  try{
+    const r=await fetch('/api'+path,{method,headers:{'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
+    if(!r.ok)throw new Error(r.status);
+    return r.json();
+  }catch(e){
+    console.error('[API]',method,path,e.message);
+    return null;
+  }
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+async function init(){
+  // Check health
+  const health=await api('GET','/health');
+  const dot=document.getElementById('apiDot');
+  const txt=document.getElementById('apiStatusText');
+  if(health&&health.status==='ok'){
+    dot.classList.add('ok'); txt.textContent='API Online'; txt.style.color='var(--fully)';
+  } else {
+    dot.classList.add('err'); txt.textContent='Offline (local mode)'; txt.style.color='var(--high)';
+    loadLocalStatuses();
+  }
+  if(health){
+    const statuses=await api('GET','/statuses');
+    if(statuses)gapStatuses=statuses;
+    const shs=await api('GET','/stakeholders');
+    if(shs)stakeholders=shs;
+  }
+  renderRuleAreaBar();
+  updateKPIs();
+  renderRegister();
+  loadNotifLog();
+}
+
+function loadLocalStatuses(){
+  try{gapStatuses=JSON.parse(localStorage.getItem('dpdpa_statuses')||'{}');}catch(e){}
+  try{stakeholders=JSON.parse(localStorage.getItem('dpdpa_stakeholders')||'[]');}catch(e){}
+}
+
+// ─── NAV ──────────────────────────────────────────────────────────────────────
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(item=>{
+    if(item.getAttribute('onclick')&&item.getAttribute('onclick').includes("'"+id+"'"))item.classList.add('active');
+  });
+  if(id==='register')renderRegister();
+  if(id==='dashboard'){renderRuleAreaBar();updateKPIs();}
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('collapsed');
+  document.getElementById('mainContent').classList.toggle('expanded');
+}
+
+// ─── KPIs ─────────────────────────────────────────────────────────────────────
+function updateKPIs(){
+  const fully=Object.values(gapStatuses).filter(s=>s==='Fully Addressed').length;
+  const pct=Math.round(fully/119*100);
+  const el=document.getElementById('kpiPct');
+  const el2=document.getElementById('kpiFullyAddressed');
+  if(el){el.textContent=pct+'%';el.style.color=pct>=80?'var(--fully)':pct>=50?'var(--medium)':'var(--critical)';}
+  if(el2)el2.textContent=fully;
+  const sc=document.getElementById('stakeholderCount');
+  if(sc){
+    const n=stakeholders.length;
+    sc.textContent=n>0?n+' Active':('Set Up');
+    sc.style.color=n>0?'var(--fully)':'var(--accent)';
+  }
+}
+
+// ─── RULE AREA BAR ────────────────────────────────────────────────────────────
+function renderRuleAreaBar(){
+  const container=document.getElementById('ruleAreaBar');
+  if(!container)return;
+  const phaseColors={'Immediate':'var(--phase-imm)','12 Months':'var(--phase-12)','18 Months':'var(--phase-18)'};
+  container.innerHTML=RULE_AREAS.map(ra=>{
+    const short=ra.name.replace(/ \(in force.*\)/,'').replace(/ — .*/,'').trim();
+    const color=phaseColors[ra.phase]||'var(--text-dim)';
+    const w=Math.round(ra.items/18*100);
+    return`<div class="rab-row"><div class="rab-label" title="${ra.name}">${short}</div><div class="rab-track"><div class="rab-seg" style="width:${w}%;background:${color};opacity:0.7;border-radius:3px"></div></div><div class="rab-total">${ra.items}</div></div>`;
+  }).join('');
+}
+
+// ─── REGISTER ─────────────────────────────────────────────────────────────────
+function renderRegister(){
+  const container=document.getElementById('registerContainer');
+  if(!container)return;
+  const search=(document.getElementById('searchInput')||{}).value?.toLowerCase()||'';
+  const fp=(document.getElementById('filterPriority')||{}).value||'';
+  const fph=(document.getElementById('filterPhase')||{}).value||'';
+  const fs=(document.getElementById('filterStatus')||{}).value||'';
+
+  const filtered=GAP_DATA.filter(item=>{
+    const ms=!search||(item.topic+item.rule+item.req+item.area).toLowerCase().includes(search);
+    const mp=!fp||item.priority===fp;
+    const mph=!fph||item.phase===fph;
+    const mfs=!fs||getStatus(item.num)===fs;
+    return ms&&mp&&mph&&mfs;
+  });
+
+  document.getElementById('resultsCount').textContent=filtered.length+' items';
+  const areas=[...new Set(GAP_DATA.map(d=>d.area))];
+  let html='';
+
+  areas.forEach(area=>{
+    const areaItems=filtered.filter(d=>d.area===area);
+    if(!areaItems.length)return;
+    const key='area_'+area.replace(/[^a-z0-9]/gi,'_');
+    const isOpen=expandedCards.has(key)||search||fp||fph||fs;
+    html+=`<div class="rule-group-header" onclick="toggleGroup('${key}')">
+      <span class="rg-name">${area}</span>
+      <span class="rg-count">${areaItems.length} item${areaItems.length>1?'s':''}</span>
+      <span class="rg-chevron ${isOpen?'open':''}" id="chevron_${key}">▶</span>
+    </div>
+    <div class="rule-group-content" id="group_${key}" style="max-height:${isOpen?'9999px':'0'}">`;
+
+    areaItems.forEach(item=>{
+      const status=getStatus(item.num);
+      const prio=item.priority.toLowerCase();
+      const phaseClass=item.phase==='Immediate'?'imm':item.phase==='12 Months'?'p12':'p18';
+      const phaseLabel=item.phase==='Immediate'?'⚡ Immediate':item.phase==='12 Months'?'🟡 12 Mo':'🔵 18 Mo';
+      const cardKey='card_'+item.num;
+      const isExp=expandedCards.has(cardKey);
+      html+=`<div class="register-card ${prio}" onclick="toggleCard('${cardKey}',${item.num},event)">
+        <div class="rc-header">
+          <div class="rc-num">${item.num}</div>
+          <div class="rc-rule">${item.rule}</div>
+          <div class="rc-topic">${item.topic}</div>
+          <div class="rc-badges">
+            <span class="badge ${prio}">${item.priority}</span>
+            <span class="badge ${phaseClass}">${phaseLabel}</span>
+          </div>
+        </div>
+        <div class="rc-req">${item.req}</div>
+        <div class="rc-meta">
+          <div class="rc-meta-item">Applies to: <span>${item.appliesTo}</span></div>
+          ${item.penaltyRef!=='—'?`<div class="rc-meta-item">Penalty: <span>${item.penaltyRef}</span></div>`:''}
+          <div class="rc-meta-item">Status: <span style="color:${statusColor(status)}">${status}</span></div>
+        </div>
+        <div class="rc-expand ${isExp?'open':''}" id="${cardKey}">
+          <div class="rc-section"><div class="rc-section-title">Gap Analysis Question</div><div class="rc-section-body">${item.question}</div></div>
+          <div class="rc-section"><div class="rc-section-title" style="color:var(--critical)">Gap Indicators (Red Flags)</div><div class="rc-section-body">${item.gaps}</div></div>
+          <div class="rc-section"><div class="rc-section-title" style="color:var(--fully)">Recommended Remediation Steps</div><div class="rc-section-body">${item.remediation}</div></div>
+          <div class="rc-section">
+            <div class="rc-section-title">Update Gap Status</div>
+            <select class="status-select" onchange="updateStatus(${item.num},this.value)" onclick="event.stopPropagation()">
+              ${['Not Assessed','Gap Identified — Critical','Gap Identified — High','Gap Identified — Medium','Partially Addressed','Fully Addressed','N/A'].map(s=>`<option value="${s}" ${status===s?'selected':''}>${s}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+
+  container.innerHTML=html||'<div style="text-align:center;padding:40px;color:var(--text-muted)">No items match your filters.</div>';
+}
+
+function getStatus(num){return gapStatuses[num]||'Not Assessed';}
+function statusColor(status){
+  if(status==='Fully Addressed')return'var(--fully)';
+  if(status==='Partially Addressed')return'var(--partial)';
+  if(status.includes('Critical'))return'var(--critical)';
+  if(status.includes('High'))return'var(--high)';
+  if(status.includes('Medium'))return'var(--medium)';
+  return'var(--text-muted)';
+}
+
+async function updateStatus(num,status){
+  gapStatuses[num]=status;
+  // Show saving indicator
+  document.getElementById('savingIndicator').style.display='block';
+  clearTimeout(saveTimeout);
+  saveTimeout=setTimeout(async()=>{
+    const result=await api('PATCH','/statuses/'+num,{status});
+    if(!result){
+      // Fallback to localStorage
+      localStorage.setItem('dpdpa_statuses',JSON.stringify(gapStatuses));
+    }
+    document.getElementById('savingIndicator').style.display='none';
+    updateKPIs();
+  },600);
+  updateKPIs();
+}
+
+function toggleCard(key,num,event){
+  if(event.target.tagName==='SELECT')return;
+  if(expandedCards.has(key))expandedCards.delete(key);
+  else expandedCards.add(key);
+  const el=document.getElementById(key);
+  if(el)el.classList.toggle('open');
+}
+function toggleGroup(key){
+  const content=document.getElementById('group_'+key);
+  const chevron=document.getElementById('chevron_'+key);
+  if(!content)return;
+  const isOpen=content.style.maxHeight!=='0px'&&content.style.maxHeight!=='0';
+  content.style.maxHeight=isOpen?'0':'9999px';
+  if(chevron)chevron.classList.toggle('open',!isOpen);
+  if(!isOpen)expandedCards.add(key);else expandedCards.delete(key);
+}
+function filterRegister(){renderRegister();}
+
+// ─── NOTIFICATIONS ────────────────────────────────────────────────────────────
+function openNotifModal(){
+  renderStakeholders();
+  loadNotifLog();
+  document.getElementById('notifModal').classList.add('open');
+}
+function closeNotifModal(){document.getElementById('notifModal').classList.remove('open');}
+
+function renderStakeholders(){
+  const list=document.getElementById('stakeholderList');
+  if(!list)return;
+  if(!stakeholders.length){list.innerHTML='<div style="font-size:11px;color:var(--text-dim);padding:6px 0">No stakeholders added yet.</div>';return;}
+  list.innerHTML=stakeholders.map(s=>`
+    <div class="stakeholder-row">
+      <div class="stakeholder-email">${s.email}</div>
+      <div class="stakeholder-role">${s.role}</div>
+      <button class="stakeholder-remove" onclick="removeStakeholder('${s.email}')">✕</button>
+    </div>`).join('');
+}
+
+async function addStakeholder(){
+  const email=document.getElementById('newEmail').value.trim();
+  const role=document.getElementById('newRole').value;
+  if(!email||!email.includes('@')){showToast('Please enter a valid email address','error');return;}
+  const result=await api('POST','/stakeholders',{email,role});
+  if(result&&!result.error){
+    stakeholders.push(result);
+    document.getElementById('newEmail').value='';
+    renderStakeholders();
+    updateKPIs();
+    showToast('Stakeholder added: '+email,'success');
+  } else {
+    // Local fallback
+    if(!stakeholders.find(s=>s.email===email)){
+      stakeholders.push({email,role,active:true});
+      document.getElementById('newEmail').value='';
+      renderStakeholders();
+      updateKPIs();
+      showToast('Stakeholder added (local): '+email,'info');
+    } else showToast('Stakeholder already exists','error');
+  }
+  updatePreview();
+}
+
+async function removeStakeholder(email){
+  await api('DELETE','/stakeholders/'+encodeURIComponent(email));
+  stakeholders=stakeholders.filter(s=>s.email!==email);
+  renderStakeholders();
+  updateKPIs();
+  showToast('Stakeholder removed','info');
+}
+
+document.addEventListener('click',e=>{
+  if(e.target.classList.contains('freq-btn')){
+    document.querySelectorAll('.freq-btn').forEach(b=>b.classList.remove('active'));
+    e.target.classList.add('active');
+    activeFreq=e.target.dataset.freq;
+    updatePreview();
+  }
+});
+
+function updatePreview(){
+  const subject=document.getElementById('previewSubject');
+  const body=document.getElementById('previewBody');
+  const today=new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  const fully=Object.values(gapStatuses).filter(s=>s==='Fully Addressed').length;
+  const pct=Math.round(fully/119*100);
+  const recipients=stakeholders.map(s=>s.email).join(', ')||'[no recipients]';
+  const freqMap={
+    'Daily':{sub:`📊 DPDPA 2025 — Daily Compliance Digest · ${today}`,body:`Recipients: ${recipients}<br><br>Summary: 119 items · ${fully} Fully Addressed (${pct}%) · 23 Critical gaps outstanding.<br><br>⚠️ Phase 1 (Rules 17–21) IN FORCE since 13 Nov 2025 — 15 items.<br>Next deadline: 13 November 2026 (Rule 4 — Consent Managers).<br><br>— DPDPA Gap Analysis Platform`},
+    'Weekly':{sub:`📋 DPDPA 2025 — Weekly Summary · ${today}`,body:`Progress: ${fully}/119 (${pct}%) fully addressed.<br><br>Critical: 23 · High: 75 · Penalty exposure: up to ₹250 crore.<br><br>— DPDPA Gap Analysis Platform`},
+    'Monthly':{sub:`📈 DPDPA 2025 — Monthly Report · ${today}`,body:`Monthly compliance: ${pct}% (${fully}/119 items).<br>Critical: 23 · High: 75 · Total max exposure: ₹250 Crore.<br><br>— DPDPA Gap Analysis Platform`},
+    'Critical Only':{sub:`🚨 DPDPA 2025 — Critical Alert · ${today}`,body:`23 CRITICAL items require immediate executive attention.<br>Max penalty exposure: ₹250 Crore (Sch. Item 1).<br><br>Top: Security safeguards (Rule 6) · Age verification (Rule 10) · DPO appointment (Rule 13).<br><br>— DPDPA Gap Analysis Platform`},
+    'Deadline':{sub:`⏰ DPDPA 2025 — Deadline Reminder · ${today}`,body:`Phase 2: 13 November 2026 (Rule 4 — 19 items).<br>Phase 3: 13 May 2027 (Core obligations — 85 items).<br>Phase 1 ALREADY IN FORCE since 13 Nov 2025.<br><br>— DPDPA Gap Analysis Platform`},
+  };
+  const tpl=freqMap[activeFreq]||freqMap['Daily'];
+  if(subject)subject.textContent=tpl.sub;
+  if(body)body.innerHTML=tpl.body;
+}
+
+async function saveNotifications(){
+  const triggers={
+    critical:document.getElementById('trig-critical').checked,
+    deadline:document.getElementById('trig-deadline').checked,
+    statusChange:document.getElementById('trig-statusChange').checked,
+    weekly:document.getElementById('trig-weekly').checked,
+    phase:document.getElementById('trig-phase').checked,
+    assigned:document.getElementById('trig-assigned').checked,
+  };
+  await api('PUT','/notifications',{frequency:activeFreq,triggers});
+  localStorage.setItem('dpdpa_stakeholders',JSON.stringify(stakeholders));
+  closeNotifModal();
+  showToast('✅ Notifications saved and activated!','success');
+  loadNotifLog();
+}
+
+async function testEmail(){
+  showToast('Sending test email...','info');
+  const result=await api('POST','/notifications/test');
+  if(result&&result.sent)showToast('✅ Test email sent!','success');
+  else if(result&&result.mock)showToast('Mock mode: SMTP not configured in .env','info');
+  else showToast('No active stakeholders to send to','error');
+  loadNotifLog();
+}
+
+async function loadNotifLog(){
+  const data=await api('GET','/notifications/log');
+  const container=document.getElementById('notifLogItems');
+  const countEl=document.getElementById('logCount');
+  if(!data||!data.log||!data.log.length)return;
+  if(countEl)countEl.textContent=data.log.length+' events';
+  if(container){
+    container.innerHTML=data.log.slice(-5).reverse().map(item=>{
+      const t=new Date(item.time).toLocaleTimeString();
+      return`<div class="notif-log-item"><div class="notif-log-icon">📧</div><div class="notif-log-body"><div class="notif-log-title">${item.message}</div></div><div class="notif-log-time">${t}</div></div>`;
+    }).join('');
+  }
+}
+
+// ─── EXPORT ───────────────────────────────────────────────────────────────────
+function exportCSV(){
+  const rows=[['#','Rule Reference','Requirement Topic','Priority','Phase','Applies To','Gap Status','Penalty Ref','Rule Area']];
+  GAP_DATA.forEach(item=>rows.push([item.num,item.rule,item.topic,item.priority,item.phase,item.appliesTo,getStatus(item.num),item.penaltyRef,item.area]));
+  const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='DPDPA_Gap_Analysis_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+  URL.revokeObjectURL(url);
+  showToast('CSV exported successfully','success');
+}
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+let toastTimeout=null;
+function showToast(msg,type='info'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast '+type;
+  t.style.display='block';
+  clearTimeout(toastTimeout);
+  toastTimeout=setTimeout(()=>{t.style.display='none';},3500);
+}
+
+// ─── AUTO-REFRESH STATS ───────────────────────────────────────────────────────
+setInterval(async()=>{
+  const stats=await api('GET','/stats');
+  if(stats){
+    const el=document.getElementById('kpiFullyAddressed');
+    const el2=document.getElementById('kpiPct');
+    if(el)el.textContent=stats.fully;
+    if(el2){el2.textContent=stats.pct+'%';el2.style.color=stats.pct>=80?'var(--fully)':stats.pct>=50?'var(--medium)':'var(--critical)';}
+  }
+},30000);
+
+// ─── START ────────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
